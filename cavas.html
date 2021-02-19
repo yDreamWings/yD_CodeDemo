@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>折线图效果</title>
+  <style>
+    html,body{
+      width: 100%;
+      height: 100%;
+    }
+    #cav{
+      /* 居中 边框 */
+      position: relative;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+    }
+    .text{
+      position: relative;
+      margin-top: 20px;
+      margin-left: 20px;
+    }
+    input{
+      outline: none;
+      border: none;
+    }
+    span{
+      display: inline-block;
+      border: 1px solid black;
+    }
+    .commit{
+      padding: 3px;
+      font-size: 12px;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+      background-color: rgb(147, 147, 241);
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="text">
+    X坐标：<span><input type="text"></span>
+    Y坐标：<span><input type="text"></span>
+    <span class="commit">标点</span>
+  </div>
+  <canvas id="cav" width='600px' height='500px'></canvas>
+
+    <script>
+      const canvas = document.getElementById('cav');
+      const ctx = canvas.getContext('2d');
+      ctx.beginPath();
+      ctx.lineWidth = '1';
+      ctx.strokeStyle = '#000'
+
+      /******************************* 建立坐标轴 **************************************/
+      // 建立X坐标轴
+      ctx.moveTo(20, 490);
+      ctx.lineTo(20,10);
+      // 建立Y坐标轴
+      ctx.moveTo(20, 490);
+      ctx.lineTo(590, 490);
+      /******************************* 画坐标线 **************************************/
+      // 画横坐标
+      for(let startY = 470; startY > 10; startY -= 20) {
+        ctx.moveTo(20, startY);
+        ctx.lineTo(590, startY);
+        let strY = (500 - startY - 10) + '';
+        ctx.font = '10px'
+        ctx.strokeText(strY, 0,startY);
+      }
+      ctx.stroke();
+      ctx.closePath();
+      // 画纵坐标
+      ctx.beginPath();
+      ctx.strokeStyle = 'blue'
+      for(let startX = 40; startX < 600; startX += 20) {
+        ctx.moveTo(startX, 490);
+        ctx.lineTo(startX, 20);
+      }
+      ctx.stroke();
+      ctx.closePath();
+      /******************************* 画坐标点 **************************************/
+      ctx.beginPath();
+      ctx.strokeStyle = 'red'
+      function drawPoint(x, y) {
+        ctx.arc(x + 20, 490 - y, 1, 0, 2*Math.PI);
+        ctx.font = '10px';
+        let str = `(${x},${y})`;
+        ctx.strokeText(str, x + 20, 490 - y);
+      }
+
+      /************************************ 测试代码 ****************************************/
+      const commit = document.getElementsByClassName('commit')[0];
+      const coordinateX = document.getElementsByTagName('input')[0];
+      const coordinateY = document.getElementsByTagName('input')[1];
+      commit.onclick = function() {
+        let valueX = parseInt(coordinateX.value);
+        let valueY = parseInt(coordinateY.value);
+        if(valueX > 0 && valueX <= 560 && valueY > 0 && valueY <= 460) {
+          drawPoint(valueX,valueY);
+          ctx.stroke();
+        }
+        coordinateX.value = '';
+        coordinateY.value = '';
+      }
+    </script>
+</body>
+</html>
